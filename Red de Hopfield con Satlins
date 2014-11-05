@@ -1,0 +1,103 @@
+clc
+clear
+disp('***************Modelo de  Hopfiel*************')
+
+
+num1 = [ -1, -1, -1,-1, 1, -1,-1,-1,-1,1,-1,-1,-1,-1,1,-1,-1,-1,-1,1,-1,-1,-1,-1,1];
+num2 = [ 1, 1, 1,1,1, -1,-1,-1,-1,1,1,1,1,1,1,1,-1,-1,-1,1,1,1,1,1,1];
+num4 = [ 1, -1, -1, -1, 1, 1,-1,-1,-1,1,1,1,1,1,1,-1,-1,-1,-1,1,-1,-1,-1,-1,1];
+
+num4mal = [1,-1,-1,-1,1,1,-1,-1,-1,1,1,-1,-1,-1,1,-1,-1,-1,-1,1,-1,-1,-1,-1,1];%numero 0 mal hecho
+num1mal = [-1, -1, -1,-1, -1, -1,-1,-1,-1,-1,-1,-1,-1,-1,1,-1,-1,-1,-1,1,-1,-1,-1,-1,1];%numero 1 mal hecho
+num2mal = [ 1, 1, 1,1,1, -1,-1,-1,-1,1,1,1,1,1,1,1,-1,-1,-1,1,-1,-1,1,1,1 ];%numero 2 mal hecho
+
+disp('Iniciando fase de aprendizaje')
+
+
+M=(num4'*num4-eye(25))+(num1'*num1-eye(25))+(num2'*num2-eye(25))
+
+%fase de recuperacion
+disp('Iniciando fase de recuperacion')
+
+%Almacenamos en una variable aux lo que se requiere recuperar;
+sal=0;
+aux=num4mal;
+%Multiplicamos aux por la matriz de memoria "M" que nos dará como
+%resultado una nueva matriz "b1"Esto se lo puede considerar iteración y se puede tener cuantas quiera
+b1=aux*M
+
+for i=1:25%Iteramos la matriz b1
+          %a fin de que se aplique 
+          %la funcion satlins
+    % x<0(x=-1); x>0(x=1);
+    if b1(i)<0
+        b1(i)=-1; 
+    else
+        b1(i)=1;
+    end
+end
+b1
+
+
+while(sal==0)
+   aux=b1; 
+    b2=aux*M;
+    
+    %Función de activación
+    for i=1:25%Iteramos la matriz b2
+              %a fin de que se aplique 
+              %la funcion de activación 
+    if b2(i)<0
+        b2(i)=-1 
+    else
+        b2(i)=1
+    end
+    end
+sal=isequal(b2,b1);
+if(sal==0)
+    b1=b2;
+end
+
+    IT2=b2;
+for i=1:25
+    if IT2(i)==-1
+        IT2(i)=0;
+    end
+end
+
+
+end 
+
+%Llevar los resultados a una matriz
+
+
+    patron=num4mal;
+
+    for i=1:25 %Se acomodan los valores para presentar en una matriz
+        if IT2(i)==-1
+            IT2(i)=0
+        end
+        if patron(i)==-1
+            patron(i)=0
+        end
+    end
+    
+    for i=1:5
+        P(1,i)=patron(i);
+        P(2,i)=patron(i+5);
+        P(3,i)=patron(i+10);
+        P(4,i)=patron(i+15);
+        P(5,i)=patron(i+20);
+        
+        S(1,i)=IT2(i);
+        S(2,i)=IT2(i+5);
+        S(3,i)=IT2(i+10);
+        S(4,i)=IT2(i+15);
+        S(5,i)=IT2(i+20);
+   
+    end
+
+disp('PATRON INGRESADO: ')
+    P
+disp('Patron Asociado a : \n')
+    S
